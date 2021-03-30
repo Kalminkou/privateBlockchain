@@ -136,19 +136,19 @@ class Blockchain {
             // Calculate current time
             let currentTime = parseInt(new Date().getTime().toString().slice(0,-3));
 
-            if (!(currentTime - msgTime < 3000)) {
-                //let checkMsg = bitcoinMessage.verify(message, address, signature);
-                //console.log('Check bitcoinMessage Verify()', checkMsg);
-                //if (checkMsg) {
+            if ((currentTime - msgTime < 300)) {
+                let checkMsg = bitcoinMessage.verify(message, address, signature);
+                 if (checkMsg) {
                     const newBlock = new BlockClass.Block({'owner': address,'star': star});
                     await self._addBlock(newBlock)
-                      .then(resolve(newBlock))
-                      .catch(function(err) {
-                        reject(err);
-                      });
-                //}
+                      .then(block => resolve(block))
+                      // .catch(function(err) {
+                      //   reject(err);
+                      // });
+                }
+                 reject({'Error': 'Verif failed'});
             }
-
+            reject({"Error":'Out of time'});
         });
     }
 
